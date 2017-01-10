@@ -154,6 +154,8 @@ if __name__ == '__main__':
                     help="MUC room to join")
     optp.add_option("-n", "--nick", dest="nick",
                     help="MUC nickname")
+    optp.add_option("-p", "--password", dest="password",
+                    help="Password")
 
     opts, args = optp.parse_args()
 
