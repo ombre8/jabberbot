@@ -59,8 +59,9 @@ class MUCBot(sleekxmpp.ClientXMPP):
         # any presences you send yourself. To limit event handling
         # to a single room, use the events muc::room@server::presence,
         # muc::room@server::got_online, or muc::room@server::got_offline.
-        self.add_event_handler("muc::%s::got_online" % self.room,
-                               self.muc_online)
+        # lg 18.1.2017 Commented this out, we don't need the bot to greet everyone
+        #self.add_event_handler("muc::%s::got_online" % self.room,
+        #                       self.muc_online)
 
 
     def start(self, event):
