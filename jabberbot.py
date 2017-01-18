@@ -111,6 +111,11 @@ class MUCBot(sleekxmpp.ClientXMPP):
             self.send_message(mto=msg['from'].bare,
                               mbody="I heard that, %s. But I'm stupid now, waiting for your Pullrequest at https://github.com/ombre8/jabberbot" % msg['mucnick'],
                               mtype='groupchat')
+        if msg['mucnick'] == 'cfasnacht':
+            self.send_message(mto=msg['from'].bare,
+                              mbody="%s wie meinsch? \"%s\"" % (msg['mucnick'], msg['body']),
+                              mtype='groupchat')
+
 
     def muc_online(self, presence):
         """
