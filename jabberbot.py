@@ -13,6 +13,7 @@ import sys
 import logging
 import getpass
 from optparse import OptionParser
+from googleapi import main(gCalendar)
 
 import sleekxmpp
 
@@ -158,7 +159,9 @@ if __name__ == '__main__':
     optp.add_option("-r", "--room", dest="room",
                     help="MUC room to join")
     optp.add_option("-n", "--nick", dest="nick",
-                    help="MUC nickname")
+                    help="MUC nickname"),
+    optp.add_option("-c", "--cal", dest="gCalendar",
+                    help="Googlecalender adress"),
     opts, args = optp.parse_args()
 
     # Setup logging.

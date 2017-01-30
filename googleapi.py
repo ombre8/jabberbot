@@ -50,7 +50,7 @@ def get_credentials():
         print('Storing credentials to ' + credential_path)
     return credentials
 
-def main():
+def main(gCalendar):
     """Shows basic usage of the Google Calendar API.
 
     Creates a Google Calendar API service object and outputs a list of the next
@@ -64,7 +64,7 @@ def main():
     """print('Getting the upcoming 10 events')
     """
     eventsResult = service.events().list(
-        calendarId='puzzle.ch_oki8t2dorn70t0h7ho4iuj2ldo@group.calendar.google.com', timeMin=now, maxResults=10, singleEvents=True,
+        calendarId=gCalendar + '@group.calendar.google.com', timeMin=now, maxResults=10, singleEvents=True,
         orderBy='startTime').execute()
     events = eventsResult.get('items', [])
 
