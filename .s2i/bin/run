@@ -1,1 +1,1 @@
-python2 jabberbot.py -q -j $JID -r $MUCROOM -n $NICKNAME -p $PASSWORD
+python2 jabberbot.py -q -j $JID -r $MUCROOM -n $NICKNAME -p $PASSWORD -c $GCALENDAR
