@@ -46,16 +46,16 @@ def create_meme(meme, t0, t1):
     return imageurl
 
 def list_memes():
-    l = []
-    list = ''
+    print 'Available memes:'
+    print
     for m in memes:
-        l.append(m)
-    l.sort()
-    for i in l:
-        list += i + ', '
-    return list[:-2]
+        print m
+    print
 
 if __name__ == '__main__':
+
+    list_memes()
+
     if len(sys.argv) != 4:
         print('Usage meme text0 text1')
         sys.exit(1)
