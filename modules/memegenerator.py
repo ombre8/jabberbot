@@ -3,9 +3,6 @@ import urllib
 import sys
 import json
 
-USERNAME = 'UsIjFolf2'
-PASSWORD = 'Quohyib0'
-
 class Memegenerator:
     """
     Memegenerator class, generates a glorious meme using the memegenerator.net api.
@@ -72,20 +69,27 @@ class Memegenerator:
         """
         List all known memes
         """
-        print 'Available memes:'
+        print
+        print "Available memes:"
         print
         for m in self.memes:
             print m
         print
 
-if __name__ == '__main__':
+def main():
+
+    USERNAME = 'UsIjFolf2'
+    PASSWORD = 'Quohyib0'
 
     m = Memegenerator(USERNAME,PASSWORD)
-    m.list_memes()
 
     if len(sys.argv) != 4:
-        print('Usage meme text0 text1')
+        print("Usage: %prog [options] memename text0 text1")
+        m.list_memes()
         sys.exit(1)
     
     print "creating: %s %s %s" % (sys.argv[1], sys.argv[2], sys.argv[3])
     print m.create_meme(sys.argv[1], sys.argv[2], sys.argv[3])
+
+if __name__ == '__main__':
+    main()
