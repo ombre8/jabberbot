@@ -13,7 +13,7 @@ import sys
 import logging
 import getpass
 from optparse import OptionParser
-from googleapi import main(gCalendar)
+from googleapi import getTV(gCalendar)
 
 import sleekxmpp
 
