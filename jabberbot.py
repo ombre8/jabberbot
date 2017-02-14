@@ -86,13 +86,13 @@ class MUCBot(sleekxmpp.ClientXMPP):
         """
 
         # "parse" body and choose correct callback
-        # Just debugging! This needs to be done properly!
+        # Just debugging! This needs to be done properly via event handler!
         if msg['mucnick'] != self.nick and self.nick in msg['body']:
-            onSysbotMentioned(msg)
+            self.onSysbotMentioned(msg)
         if msg['mucnick'] != self.nick and "meme" in msg['body']:
-            onMemeRequested(msg)
+            self.onMemeRequested(msg)
         if msg['mucnick'] != self.nick and "Tagesverantworung" in msg['body']:
-            onTVRequested(msg)
+            self.onTVRequested(msg)
 
     def muc_online(self, presence):
         """
@@ -111,16 +111,23 @@ class MUCBot(sleekxmpp.ClientXMPP):
                               mbody="Hello, %s %s" % (presence['muc']['role'], presence['muc']['nick']),
                               mtype='groupchat')
 
-    # Callback functions ahead
+    # ---- Callback functions ahead
     def onSysbotMentioned(self, msg):
             self.send_message(mto=msg['from'].bare,
                               mbody="I heard that, %s. But I'm stupid now, waiting for your Pullrequest at https://github.com/ombre8/jabberbot" % msg['mucnick'],
                               mtype='groupchat')
+
     def onMemeRequested(self, msg):
         m = Memegenerator("UsIjFolf2", "Quohyib0")
         self.send_message(mto=msg['from'].bare,
                           mbody="Look at this: %s" % m.create_meme("Successkid", "Sysbot", "Now supports memes"),
                           mtype='groupchat')
+
+    def onTVRequested(self, msg):
+        self.send_message(mto=msg['from'].bare,
+                          mbody="Not yet available",
+                          mtype='groupchat')
+
         
 if __name__ == '__main__':
     # Setup the command line arguments
