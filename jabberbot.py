@@ -93,7 +93,7 @@ class MUCBot(sleekxmpp.ClientXMPP):
              self.onTVRequested(msg)
         elif msg['mucnick'] != self.nick and self.nick in msg['body']:
              self.onSysbotMentioned(msg)
- 
+
 
     def muc_online(self, presence):
         """
@@ -129,7 +129,7 @@ class MUCBot(sleekxmpp.ClientXMPP):
                           mbody="Not yet available",
                           mtype='groupchat')
 
-        
+
 if __name__ == '__main__':
     # Setup the command line arguments
     optp = OptionParser()
