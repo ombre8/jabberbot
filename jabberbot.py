@@ -91,7 +91,7 @@ class MUCBot(sleekxmpp.ClientXMPP):
              self.onMemeRequested(msg)
         if msg['mucnick'] != self.nick and "Tagesverantworung" in msg['body']:
              self.onTVRequested(msg)
-        elseif msg['mucnick'] != self.nick and self.nick in msg['body']:
+        elif msg['mucnick'] != self.nick and self.nick in msg['body']:
              self.onSysbotMentioned(msg)
  
 
