@@ -87,12 +87,12 @@ class MUCBot(sleekxmpp.ClientXMPP):
 
         # "parse" body and choose correct callback
         # Just debugging! This needs to be done properly via event handler!
-       if msg['mucnick'] != self.nick and "meme" in msg['body']:
-            self.onMemeRequested(msg)
-       if msg['mucnick'] != self.nick and "Tagesverantworung" in msg['body']:
-            self.onTVRequested(msg)
-       else msg['mucnick'] != self.nick and self.nick in msg['body']:
-            self.onSysbotMentioned(msg)
+        if msg['mucnick'] != self.nick and "meme" in msg['body']:
+             self.onMemeRequested(msg)
+        if msg['mucnick'] != self.nick and "Tagesverantworung" in msg['body']:
+             self.onTVRequested(msg)
+        else msg['mucnick'] != self.nick and self.nick in msg['body']:
+             self.onSysbotMentioned(msg)
  
 
     def muc_online(self, presence):
