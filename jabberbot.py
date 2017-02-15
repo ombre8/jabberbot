@@ -12,15 +12,12 @@
 import sys
 import logging
 import getpass
-from optparse import OptionParser
-from googleapi import getTV(gCalendar)
-
 import sleekxmpp
 
-# Python versions before 3.0 do not use UTF-8 encoding
-# by default. To ensure that Unicode is handled properly
-# throughout SleekXMPP, we will set the default encoding
-# ourselves to UTF-8.
+from optparse import OptionParser
+from modules import memegenerator
+
+# set proper encoding
 if sys.version_info < (3, 0):
     reload(sys)
     sys.setdefaultencoding('utf8')
@@ -39,14 +36,11 @@ class MUCBot(sleekxmpp.ClientXMPP):
     def __init__(self, jid, password, room, nick):
         sleekxmpp.ClientXMPP.__init__(self, jid, password)
 
+        # set globals
         self.room = room
         self.nick = nick
 
-        # The session_start event will be triggered when
-        # the bot establishes its connection with the server
-        # and the XML streams are ready for use. We want to
-        # listen for this event so that we we can initialize
-        # our roster.
+        # add callbacks
         self.add_event_handler("session_start", self.start)
 
         # The groupchat_message event is triggered whenever a message
@@ -54,15 +48,7 @@ class MUCBot(sleekxmpp.ClientXMPP):
         # register a handler for the 'message' event, MUC messages
         # will be processed by both handlers.
         self.add_event_handler("groupchat_message", self.muc_message)
-
-        # The groupchat_presence event is triggered whenever a
-        # presence stanza is received from any chat room, including
-        # any presences you send yourself. To limit event handling
-        # to a single room, use the events muc::room@server::presence,
-        # muc::room@server::got_online, or muc::room@server::got_offline.
-        # lg 18.1.2017 Commented this out, we don't need the bot to greet everyone
-        #self.add_event_handler("muc::%s::got_online" % self.room,
-        #                       self.muc_online)
+        self.add_event_handler("muc::%s::got_online" % self.room, self.muc_online)
 
 
     def start(self, event):
@@ -80,11 +66,7 @@ class MUCBot(sleekxmpp.ClientXMPP):
         """
         self.get_roster()
         self.send_presence()
-        self.plugin['xep_0045'].joinMUC(self.room,
-                                        self.nick,
-                                        # If a room password is needed, use:
-                                        # password=the_room_password,
-                                        wait=True)
+        self.plugin['xep_0045'].joinMUC(self.room, self.nick, wait=True)
 
     def muc_message(self, msg):
         """
@@ -108,14 +90,16 @@ class MUCBot(sleekxmpp.ClientXMPP):
                    for stanza objects and the Message stanza to see
                    how it may be used.
         """
-        if msg['mucnick'] != self.nick and ("tv" in msg['body'] or "tv" in msg['body']):
-            self.send_message(mto=msg['from'].bare,
-                              mbody="TV ist heute: ",
-                              mtype='groupchat')
-        else msg['mucnick'] != self.nick and self.nick in msg['body']:
-            self.send_message(mto=msg['from'].bare,
-                              mbody="I heard that, %s. But I'm stupid now, waiting for your Pullrequest at https://github.com/ombre8/jabberbot" % msg['mucnick'],
-                              mtype='groupchat')
+
+        # "parse" body and choose correct callback
+        # Just debugging! This needs to be done properly via event handler!
+        if msg['mucnick'] != self.nick and "meme" in msg['body']:
+             self.onMemeRequested(msg)
+        if msg['mucnick'] != self.nick and "Tagesverantworung" in msg['body']:
+             self.onTVRequested(msg)
+        elif msg['mucnick'] != self.nick and self.nick in msg['body']:
+             self.onSysbotMentioned(msg)
+
 
     def muc_online(self, presence):
         """
@@ -131,16 +115,32 @@ class MUCBot(sleekxmpp.ClientXMPP):
         """
         if presence['muc']['nick'] != self.nick:
             self.send_message(mto=presence['from'].bare,
-                              mbody="Hello, %s %s" % (presence['muc']['role'],
-                                                      presence['muc']['nick']),
+                              mbody="Hello, %s %s" % (presence['muc']['role'], presence['muc']['nick']),
                               mtype='groupchat')
+
+    # ---- Callback functions ahead
+    def onSysbotMentioned(self, msg):
+            self.send_message(mto=msg['from'].bare,
+                              mbody="I heard that, %s. But I'm stupid now, waiting for your Pullrequest at https://github.com/ombre8/jabberbot" % msg['mucnick'],
+                              mtype='groupchat')
+
+    def onMemeRequested(self, msg):
+        m = Memegenerator("UsIjFolf2", "Quohyib0")
+        self.send_message(mto=msg['from'].bare,
+                          mbody="Look at this: %s" % m.create_meme("Successkid", "Sysbot", "Now supports memes"),
+                          mtype='groupchat')
+
+    def onTVRequested(self, msg):
+        self.send_message(mto=msg['from'].bare,
+                          mbody="Not yet available",
+                          mtype='groupchat')
 
 
 if __name__ == '__main__':
-    # Setup the command line arguments.
+    # Setup the command line arguments
     optp = OptionParser()
 
-    # Output verbosity options.
+    # Output verbosity options
     optp.add_option('-q', '--quiet', help='set logging to ERROR',
                     action='store_const', dest='loglevel',
                     const=logging.ERROR, default=logging.INFO)
@@ -151,7 +151,7 @@ if __name__ == '__main__':
                     action='store_const', dest='loglevel',
                     const=5, default=logging.INFO)
 
-    # JID and password options.
+    # JID and password options
     optp.add_option("-j", "--jid", dest="jid",
                     help="JID to use")
     optp.add_option("-p", "--password", dest="password",
@@ -159,12 +159,10 @@ if __name__ == '__main__':
     optp.add_option("-r", "--room", dest="room",
                     help="MUC room to join")
     optp.add_option("-n", "--nick", dest="nick",
-                    help="MUC nickname"),
-    optp.add_option("-c", "--cal", dest="gCalendar",
-                    help="Googlecalender adress"),
+                    help="MUC nickname")
     opts, args = optp.parse_args()
 
-    # Setup logging.
+    # Setup logging
     logging.basicConfig(level=opts.loglevel,
                         format='%(levelname)-8s %(message)s')
 
@@ -177,15 +175,13 @@ if __name__ == '__main__':
     if opts.nick is None:
         opts.nick = raw_input("MUC nickname: ")
 
-    # Setup the MUCBot and register plugins. Note that while plugins may
-    # have interdependencies, the order in which you register them does
-    # not matter.
+    # Setup the MUCBot and register plugins
     xmpp = MUCBot(opts.jid, opts.password, opts.room, opts.nick)
     xmpp.register_plugin('xep_0030') # Service Discovery
     xmpp.register_plugin('xep_0045') # Multi-User Chat
     xmpp.register_plugin('xep_0199') # XMPP Ping
 
-    # Connect to the XMPP server and start processing XMPP stanzas.
+    # Connect to the XMPP server and start processing XMPP stanzas
     if xmpp.connect():
         # If you do not have the dnspython library installed, you will need
         # to manually specify the name of the server if it does not match
