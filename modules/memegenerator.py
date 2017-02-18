@@ -12,7 +12,7 @@ class Memegenerator:
     api_loc = 'http://version1.api.memegenerator.net/Instance_Create?'
     username = ''
     password = ''
-    
+
     # A dictionary of known memes with its corresponding background images
     memes = {
         'Notsureif'     : { 'generatorID': 305,   'imageID' : 84688 },
@@ -39,7 +39,7 @@ class Memegenerator:
 
     def create_meme(self, meme, t0, t1):
         """
-        Create a meme using the internal meme dictionary. 
+        Create a meme using the internal meme dictionary.
         Text t0 and t1 can be of arbitrary size.
         """
         # Some API data
@@ -69,12 +69,12 @@ class Memegenerator:
         """
         List all known memes
         """
-        print
-        print "Available memes:"
-        print
+        print()
+        print("Available memes:")
+        print()
         for m in self.memes:
-            print m
-        print
+            print(m)
+        print()
 
 def main():
 
@@ -87,9 +87,9 @@ def main():
         print("Usage: %prog [options] memename text0 text1")
         m.list_memes()
         sys.exit(1)
-    
-    print "creating: %s %s %s" % (sys.argv[1], sys.argv[2], sys.argv[3])
-    print m.create_meme(sys.argv[1], sys.argv[2], sys.argv[3])
+
+    print("creating: %s %s %s" % (sys.argv[1], sys.argv[2], sys.argv[3]))
+    print(m.create_meme(sys.argv[1], sys.argv[2], sys.argv[3]))
 
 if __name__ == '__main__':
     main()
