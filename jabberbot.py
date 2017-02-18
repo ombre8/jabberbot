@@ -15,7 +15,7 @@ import getpass
 import sleekxmpp
 
 from optparse import OptionParser
-from modules import memegenerator
+from modules.memegenerator import Memegenerator
 
 # set proper encoding
 if sys.version_info < (3, 0):
