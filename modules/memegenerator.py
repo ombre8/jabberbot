@@ -47,16 +47,14 @@ class Memegenerator:
             'username' : self.username,
             'password' : self.password,
             'languageCode': 'es',
+            'generatorID': str(self.memes[meme]['generatorID']),
+            'imageID': str(self.memes[meme]['imageID']),
+            'text0': t0,
+            'text1': t1
         }
 
         # Build the request
-        url =self.api_loc  + 'username=' + data['username'] + '&'                           \
-                           + 'password=' + data['password'] + '&'                           \
-                           + 'languageCode=' + data['languageCode'] + '&'                   \
-                           + 'generatorID=' + str(self.memes[meme]['generatorID']) + '&'    \
-                           + 'imageID=' + str(self.memes[meme]['imageID']) + '&'            \
-                           + 'text0=' + urllib.quote_plus(t0) + '&'                         \
-                           + 'text1=' + urllib.quote_plus(t1)
+        url = self.api_loc + urllib.urlencode(data)
 
         # Call api and get html back (json)
         response = urllib.urlopen(url).read()
