@@ -92,7 +92,7 @@ class MUCBot(sleekxmpp.ClientXMPP):
         # Just debugging! This needs to be done properly via event handler!
         if msg['mucnick'] != self.nick and "meme" in msg['body']:
              self.onMemeRequested(msg)
-        elif msg['mucnick'] != self.nick and "Tagesverantwortung" or "TV" in msg['body']:
+        elif msg['mucnick'] != self.nick and "Tagesverantwortung"  in msg['body']:
              self.onTVRequested(msg)
         elif msg['mucnick'] != self.nick and "morge" in msg['body']:
              self.onMorge(msg)
