@@ -13,9 +13,11 @@ import sys
 import logging
 import getpass
 import sleekxmpp
+import re
 
 from optparse import OptionParser
 from modules.memegenerator import Memegenerator
+from modules.issue import Issue
 
 # set proper encoding
 if sys.version_info < (3, 0):
@@ -85,6 +87,7 @@ class MUCBot(sleekxmpp.ClientXMPP):
                    how it may be used.
         """
 
+        issue = re.search(r'#\d{3,5}', msg['body'])
         # "parse" body and choose correct callback
         # Just debugging! This needs to be done properly via event handler!
         if msg['mucnick'] != self.nick and "meme" in msg['body']:
@@ -93,6 +96,8 @@ class MUCBot(sleekxmpp.ClientXMPP):
              self.onTVRequested(msg)
         if msg['mucnick'] != self.nick and "morge" in msg['body']:
              self.onMorge(msg)
+        elif msg['mucnick'] != self.nick and issue:
+             self.onIssueRequested(msg, issue.group())
         elif msg['mucnick'] != self.nick and self.nick in msg['body']:
              self.onSysbotMentioned(msg)
 
@@ -134,6 +139,12 @@ class MUCBot(sleekxmpp.ClientXMPP):
         self.send_message(mto=msg['from'].bare,
                           mbody="Hello %s, I wish you a wonderfull day!" % msg['mucnick'],
                           mtype='groupchat')
+
+    def onIssueRequested(self, msg, issue):
+        self.send_message(mto=msg['from'].bare,
+                          mbody=Issue().get_url(issue),
+                          mtype='groupchat')
+
 
 
 if __name__ == '__main__':
