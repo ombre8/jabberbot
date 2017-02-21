@@ -89,8 +89,10 @@ class MUCBot(sleekxmpp.ClientXMPP):
         # Just debugging! This needs to be done properly via event handler!
         if msg['mucnick'] != self.nick and "meme" in msg['body']:
              self.onMemeRequested(msg)
-        if msg['mucnick'] != self.nick and "Tagesverantworung" in msg['body']:
+        if msg['mucnick'] != self.nick and "Tagesverantwortung" or "TV" in msg['body']:
              self.onTVRequested(msg)
+        if msg['mucnick'] != self.nick and "morge" in msg['body']:
+             self.onMorge(msg)
         elif msg['mucnick'] != self.nick and self.nick in msg['body']:
              self.onSysbotMentioned(msg)
 
@@ -106,11 +108,11 @@ class MUCBot(sleekxmpp.ClientXMPP):
             presence -- The received presence stanza. See the
                         documentation for the Presence stanza
                         to see how else it may be used.
-        """
         if presence['muc']['nick'] != self.nick:
             self.send_message(mto=presence['from'].bare,
                               mbody="Hello, %s %s" % (presence['muc']['role'], presence['muc']['nick']),
                               mtype='groupchat')
+        """
 
     # ---- Callback functions ahead
     def onSysbotMentioned(self, msg):
@@ -127,6 +129,10 @@ class MUCBot(sleekxmpp.ClientXMPP):
     def onTVRequested(self, msg):
         self.send_message(mto=msg['from'].bare,
                           mbody="Not yet available",
+                          mtype='groupchat')
+    def onMorge(self, msg):
+        self.send_message(mto=msg['from'].bare,
+                          mbody="Hello %s, I wish you a wonderfull day!" % msg['mucnick'],
                           mtype='groupchat')
 
 
