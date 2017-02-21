@@ -26,6 +26,7 @@ if sys.version_info < (3, 0):
 else:
     raw_input = input
 
+
 class MUCBot(sleekxmpp.ClientXMPP):
 
     """
@@ -43,6 +44,11 @@ class MUCBot(sleekxmpp.ClientXMPP):
 
         # add callbacks
         self.add_event_handler("session_start", self.start)
+
+        # The groupchat_message event is triggered whenever a message
+        # stanza is received from any chat room. If you also also
+        # register a handler for the 'message' event, MUC messages
+        # will be processed by both handlers.
         self.add_event_handler("groupchat_message", self.muc_message)
         self.add_event_handler("muc::%s::got_online" % self.room, self.muc_online)
 
@@ -194,6 +200,13 @@ if __name__ == '__main__':
 
     # Connect to the XMPP server and start processing XMPP stanzas
     if xmpp.connect():
+        # If you do not have the dnspython library installed, you will need
+        # to manually specify the name of the server if it does not match
+        # the one in the JID. For example, to use Google Talk you would
+        # need to use:
+        #
+        # if xmpp.connect(('talk.google.com', 5222)):
+        #     ...
         xmpp.process(block=True)
         print("Done")
     else:
