@@ -90,11 +90,11 @@ class MUCBot(sleekxmpp.ClientXMPP):
         issue = re.search(r'#\d{3,5}', msg['body'])
         # "parse" body and choose correct callback
         # Just debugging! This needs to be done properly via event handler!
-        if msg['mucnick'] != self.nick and "meme" in msg['body']:
+        if msg['mucnick'] != self.nick and "meme" in msg['body'].lower:
              self.onMemeRequested(msg)
-        elif msg['mucnick'] != self.nick and "Tagesverantwortung"  in msg['body']:
+        elif msg['mucnick'] != self.nick and "tagesverantwortung"  in msg['body'].lower:
              self.onTVRequested(msg)
-        elif msg['mucnick'] != self.nick and "morge" in msg['body']:
+        elif msg['mucnick'] != self.nick and "morge" in msg['body'].lower:
              self.onMorge(msg)
         elif msg['mucnick'] != self.nick and issue:
              self.onIssueRequested(msg, issue.group())
